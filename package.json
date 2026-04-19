@@ -1,0 +1,13 @@
+{
+  "name": "claude-design-plugin",
+  "version": "0.1.0",
+  "description": "Claude Code plugin — local React prototype builder with live Vite preview",
+  "type": "module",
+  "bin": {
+    "design": "bin/design.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.0",
+    "zod": "^3.23.0"
+  }
+}

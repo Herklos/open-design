@@ -1,0 +1,93 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Per-project compile error store, updated by the transform hook.
+const errors = new Map();
+
+export function projectsApiPlugin() {
+  return {
+    name: 'projects-api',
+
+    // Track transform errors per project
+    transform(code, id, options) {
+      const match = id.match(/\/projects\/([^/]+)\/.*\.jsx$/);
+      if (match) {
+        // If we get here without error, clear any previous error
+        errors.set(match[1], null);
+      }
+    },
+
+    // Clear errors on successful hot updates
+    handleHotUpdate({ file, server }) {
+      const match = file.match(/\/projects\/([^/]+)\/.*\.jsx$/);
+      if (match) errors.set(match[1], null);
+    },
+
+    configureServer(server) {
+      const root = server.config.root;
+      const projectsDir = path.join(root, 'projects');
+
+      // Intercept Vite's internal error events to capture compile errors
+      server.ws.on('vite:error', (payload) => {
+        const match = payload?.err?.id?.match(/\/projects\/([^/]+)\//);
+        if (match) {
+          errors.set(match[1], {
+            message: payload.err.message,
+            loc: payload.err.loc,
+          });
+        }
+      });
+
+      server.middlewares.use((req, res, next) => {
+        const url = new URL(req.url, 'http://localhost');
+
+        // GET /api/health
+        if (url.pathname === '/api/health') {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ ok: true }));
+          return;
+        }
+
+        // GET /api/projects
+        if (url.pathname === '/api/projects' && req.method === 'GET') {
+          res.setHeader('Content-Type', 'application/json');
+          if (!fs.existsSync(projectsDir)) { res.end('[]'); return; }
+
+          const projects = fs.readdirSync(projectsDir, { withFileTypes: true })
+            .filter(e => e.isDirectory())
+            .filter(e => fs.existsSync(path.join(projectsDir, e.name, 'App.jsx')))
+            .map(e => {
+              const stat = fs.statSync(path.join(projectsDir, e.name, 'App.jsx'));
+              return {
+                name: e.name,
+                updatedAt: stat.mtime.toISOString(),
+                previewUrl: `http://localhost:${server.config.server.port ?? 5173}/p/${e.name}`,
+                entry: 'App.jsx',
+              };
+            })
+            .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+
+          res.end(JSON.stringify(projects));
+          return;
+        }
+
+        // GET /api/projects/:name/health
+        const healthMatch = url.pathname.match(/^\/api\/projects\/([^/]+)\/health$/);
+        if (healthMatch && req.method === 'GET') {
+          res.setHeader('Content-Type', 'application/json');
+          const name = healthMatch[1];
+          const err = errors.get(name);
+          if (err) {
+            res.end(JSON.stringify({ status: 'error', error: err }));
+          } else {
+            const exists = fs.existsSync(path.join(projectsDir, name, 'App.jsx'));
+            res.end(JSON.stringify({ status: exists ? 'ok' : 'not_found', error: null }));
+          }
+          return;
+        }
+
+        next();
+      });
+    },
+  };
+}
