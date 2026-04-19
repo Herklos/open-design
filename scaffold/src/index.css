@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Use .dark class strategy so the dark mode toggle controls Tailwind's dark: variant */
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-background: hsl(0 0% 100%);
   --color-foreground: hsl(222.2 84% 4.9%);

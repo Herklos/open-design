@@ -1,6 +1,6 @@
-import { Suspense, lazy, useEffect, useState, useCallback } from 'react';
+import { Suspense, lazy, useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, FolderOpen, AlertCircle, RefreshCw } from 'lucide-react';
+import { ArrowLeft, FolderOpen, AlertCircle, RefreshCw, PenLine } from 'lucide-react';
 import ErrorBoundary from './ErrorBoundary.jsx';
 
 const modules = import.meta.glob('/projects/*/App.jsx');
@@ -40,12 +40,16 @@ export default function Preview() {
   const { name } = useParams();
   const key = `/projects/${name}/App.jsx`;
   const [healthError, setHealthError] = useState(null);
+  const [isWireframe, setIsWireframe] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
 
   const checkHealth = useCallback(() => {
     fetch(`/api/projects/${name}/health`)
       .then(r => r.json())
-      .then(d => { if (d.status === 'error') setHealthError(d.error); else setHealthError(null); })
+      .then(d => {
+        if (d.status === 'error') setHealthError(d.error); else setHealthError(null);
+        setIsWireframe(!!d.wireframe);
+      })
       .catch(() => { /* server not ready yet */ });
   }, [name]);
 
@@ -59,7 +63,7 @@ export default function Preview() {
     checkHealth();
   };
 
-  const ProjectApp = modules[key] ? lazy(modules[key]) : null;
+  const ProjectApp = useMemo(() => modules[key] ? lazy(modules[key]) : null, [key]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -67,8 +71,14 @@ export default function Preview() {
         <Link to="/" className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" /> Dashboard
         </Link>
-        <span className="text-border">|</span>
+        <span className="text-border" aria-hidden="true">|</span>
         <span className="font-medium">{name}</span>
+        {isWireframe && !healthError && (
+          <span className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground font-medium">
+            <PenLine className="h-3 w-3" />
+            wireframe — run /design-build {name} to convert
+          </span>
+        )}
         {healthError && (
           <span className="flex items-center gap-1 text-xs text-destructive font-medium">
             <AlertCircle className="h-3.5 w-3.5" />

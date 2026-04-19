@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, cloneElement } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '../lib/utils.js';
 
@@ -14,10 +14,14 @@ function Dialog({ open, onOpenChange, children }) {
 
 function DialogTrigger({ asChild, children, ...props }) {
   const ctx = useContext(DialogContext);
+  const handleClick = () => ctx?.onOpenChange(true);
   if (asChild) {
-    return <span onClick={() => ctx?.onOpenChange(true)} {...props}>{children}</span>;
+    return cloneElement(children, {
+      ...props,
+      onClick: (e) => { handleClick(); children.props.onClick?.(e); },
+    });
   }
-  return <button onClick={() => ctx?.onOpenChange(true)} {...props}>{children}</button>;
+  return <button onClick={handleClick} {...props}>{children}</button>;
 }
 
 function DialogPortal({ children }) {
@@ -44,6 +48,8 @@ function DialogContent({ className, children, ...props }) {
     <>
       <DialogOverlay />
       <div
+        role="dialog"
+        aria-modal="true"
         className={cn(
           'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg',
           className

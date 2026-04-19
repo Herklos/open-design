@@ -16,7 +16,7 @@
  *   design rename <old> <new>
  */
 
-import { execSync, spawn } from 'node:child_process';
+import { execSync, execFileSync, spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
@@ -189,14 +189,17 @@ function cmdUrl(name) {
 
 function cmdOpen(name) {
   if (!name) { console.error('Usage: design open <name>'); process.exit(1); }
+  assertInProjects(path.join(PROJECTS_DIR, name));
   if (!projectExists(name)) { console.error(`Project not found: ${name}`); process.exit(1); }
   if (!serverRunning()) {
     console.error('Server not running. Run: design start');
     process.exit(1);
   }
   const url = `${BASE_URL}/p/${name}`;
-  const opener = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';
-  execSync(`${opener} "${url}"`);
+  // Use execFileSync with an args array to avoid shell injection via the project name.
+  const opener = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'cmd' : 'xdg-open';
+  const args = process.platform === 'win32' ? ['/c', 'start', '', url] : [url];
+  execFileSync(opener, args, { stdio: 'ignore' });
   console.log(url);
 }
 

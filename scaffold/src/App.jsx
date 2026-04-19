@@ -4,16 +4,24 @@ import { Sun, Moon } from 'lucide-react';
 import Dashboard from './Dashboard.jsx';
 import Preview from './Preview.jsx';
 
+function safeStorage(key, value) {
+  try {
+    if (value === undefined) return localStorage.getItem(key);
+    localStorage.setItem(key, value);
+  } catch { /* private browsing / storage blocked */ }
+  return null;
+}
+
 function useDarkMode() {
   const [dark, setDark] = useState(() => {
-    const stored = localStorage.getItem('open-design-dark');
+    const stored = safeStorage('open-design-dark');
     if (stored !== null) return stored === 'true';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
-    localStorage.setItem('open-design-dark', dark);
+    safeStorage('open-design-dark', dark);
   }, [dark]);
 
   return [dark, setDark];

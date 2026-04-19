@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layers, Clock, ExternalLink, Palette, Copy, Check, Terminal } from 'lucide-react';
+import { Layers, Clock, ExternalLink, Palette, Copy, Check, Terminal, PenLine } from 'lucide-react';
 
 function formatDate(iso) {
   const d = new Date(iso);
@@ -20,18 +20,23 @@ function CopyUrlButton({ name }) {
   const handleCopy = (e) => {
     e.stopPropagation();
     const url = `${window.location.origin}/p/${name}`;
-    navigator.clipboard.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    });
+    const write = navigator.clipboard?.writeText(url);
+    if (write) {
+      write.then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      }).catch(() => {});
+    }
   };
 
   return (
     <button
       onClick={handleCopy}
       className="flex items-center gap-1 rounded px-1.5 py-0.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-      aria-label="Copy preview URL"
+      aria-label={copied ? 'Copied to clipboard' : 'Copy preview URL'}
     >
+      {/* aria-live announces the state change to screen readers */}
+      <span aria-live="polite" className="sr-only">{copied ? 'Copied to clipboard' : ''}</span>
       {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
       {copied ? 'Copied!' : 'Copy URL'}
     </button>
@@ -40,16 +45,28 @@ function CopyUrlButton({ name }) {
 
 function ProjectCard({ project, onClick }) {
   return (
-    <button
+    // div+role="button" avoids invalid button-in-button nesting (CopyUrlButton is a <button>)
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
-      className="group relative flex flex-col gap-3 rounded-xl border bg-card p-5 text-left shadow-sm transition-all hover:shadow-md hover:border-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+      aria-label={`Open ${project.name}`}
+      className="group relative flex flex-col gap-3 rounded-xl border bg-card p-5 text-left shadow-sm transition-all hover:shadow-md hover:border-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
     >
       <div className="flex h-32 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground text-4xl">
         <Palette className="h-10 w-10 opacity-30 group-hover:opacity-60 transition-opacity" />
       </div>
       <div className="flex items-end justify-between gap-2">
         <div className="min-w-0">
-          <p className="font-semibold text-sm truncate">{project.name}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="font-semibold text-sm truncate">{project.name}</p>
+            {project.wireframe && (
+              <span className="inline-flex items-center gap-0.5 rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium shrink-0">
+                <PenLine className="h-2.5 w-2.5" />wireframe
+              </span>
+            )}
+          </div>
           <p className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
             <Clock className="h-3 w-3 shrink-0" />
             {formatDate(project.updatedAt)}

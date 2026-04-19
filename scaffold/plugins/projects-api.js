@@ -63,12 +63,16 @@ export function projectsApiPlugin() {
             .filter(e => e.isDirectory())
             .filter(e => fs.existsSync(path.join(projectsDir, e.name, 'App.jsx')))
             .map(e => {
-              const stat = fs.statSync(path.join(projectsDir, e.name, 'App.jsx'));
+              const appPath = path.join(projectsDir, e.name, 'App.jsx');
+              const stat = fs.statSync(appPath);
+              const firstLine = fs.readFileSync(appPath, 'utf8').split('\n')[0] ?? '';
+              const wireframe = firstLine.startsWith('// @wireframe');
               return {
                 name: e.name,
                 updatedAt: stat.mtime.toISOString(),
                 previewUrl: `http://localhost:${server.config.server.port ?? 5173}/p/${e.name}`,
                 entry: 'App.jsx',
+                wireframe,
               };
             })
             .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
@@ -86,8 +90,14 @@ export function projectsApiPlugin() {
           if (err) {
             res.end(JSON.stringify({ status: 'error', error: err }));
           } else {
-            const exists = fs.existsSync(path.join(projectsDir, name, 'App.jsx'));
-            res.end(JSON.stringify({ status: exists ? 'ok' : 'not_found', error: null }));
+            const appPath = path.join(projectsDir, name, 'App.jsx');
+            const exists = fs.existsSync(appPath);
+            let wireframe = false;
+            if (exists) {
+              const firstLine = fs.readFileSync(appPath, 'utf8').split('\n')[0] ?? '';
+              wireframe = firstLine.startsWith('// @wireframe');
+            }
+            res.end(JSON.stringify({ status: exists ? 'ok' : 'not_found', error: null, wireframe }));
           }
           return;
         }

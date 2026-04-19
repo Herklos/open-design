@@ -30,7 +30,8 @@ function run(...args) {
       timeout: 20_000,
     }).toString().trim();
   } catch (err) {
-    return JSON.stringify({ error: err.message });
+    const detail = err.stderr?.toString().trim() || err.stdout?.toString().trim() || err.message;
+    return JSON.stringify({ error: detail });
   }
 }
 
@@ -42,7 +43,7 @@ function runPlain(...args) {
       timeout: 20_000,
     }).toString().trim();
   } catch (err) {
-    return err.message;
+    return err.stderr?.toString().trim() || err.stdout?.toString().trim() || err.message;
   }
 }
 
