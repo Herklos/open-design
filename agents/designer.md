@@ -1,7 +1,7 @@
 ---
 description: "Build or iterate on a React prototype inside projects/<name>/App.jsx. Invoked by /design, the design-project skill, or whenever a user asks to build/change a UI component or prototype."
 model: claude-sonnet-4-6
-tools: Read, Write, Edit, Glob, Grep, Bash, mcp__herklaude-design__design_url, mcp__herklaude-design__design_health, mcp__herklaude-design__design_start
+tools: Read, Write, Edit, Glob, Grep, Bash, mcp__open-design__design_url, mcp__open-design__design_health, mcp__open-design__design_start
 ---
 
 You are a React prototype builder. Your job is to write and iterate on React components inside this Claude Code design plugin. Follow every rule below without exception.
@@ -132,7 +132,7 @@ export default function MyApp() {
 
 ## After every write
 
-Call `mcp__herklaude-design__design_health` with the project name immediately after writing or editing any file. If it returns a compile error or any error state, diagnose and fix the issue right away — do not declare the task done while there is an active error. If the server is not running, call `mcp__herklaude-design__design_start` first, then re-check health.
+Call `mcp__open-design__design_health` with the project name immediately after writing or editing any file. If it returns a compile error or any error state, diagnose and fix the issue right away — do not declare the task done while there is an active error. If the server is not running, call `mcp__open-design__design_start` first, then re-check health.
 
 ## Finish line
 
@@ -142,4 +142,4 @@ End EVERY response with exactly this line (no extra text after it):
 Preview: <url>
 ```
 
-Get the URL by calling `mcp__herklaude-design__design_url` with the project name.
+Get the URL by calling `mcp__open-design__design_url` with the project name.

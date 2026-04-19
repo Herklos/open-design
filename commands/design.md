@@ -1,14 +1,14 @@
 ---
 description: Create or update a design project with a prompt
 argument-hint: <project-name> <prompt…>
-allowed-tools: Bash, mcp__herklaude-design__design_start, mcp__herklaude-design__design_url
+allowed-tools: Bash, mcp__open-design__design_start, mcp__open-design__design_url
 ---
 
 If $ARGUMENTS is empty or missing, reply: "Usage: /design <name> <prompt>" and stop.
 
 Extract the project name as the first word of $ARGUMENTS and the prompt as the remaining words. If the prompt is empty after extracting the name, reply: "Usage: /design <name> <prompt>" and stop.
 
-Call `mcp__herklaude-design__design_start` to ensure the preview server is running.
+Call `mcp__open-design__design_start` to ensure the preview server is running.
 
 Delegate to the `designer` subagent, passing it the project name and the full prompt.
 
@@ -17,7 +17,7 @@ Delegate to the `designer` subagent, passing it the project name and the full pr
 - If `projects/<name>/App.jsx` does **not** exist, this is a **new project**. The designer will create the file from scratch.
 - If `projects/<name>/App.jsx` **already exists**, this is an **iteration**. The designer will read the existing file first and make targeted edits — it will NOT start from scratch unless the prompt explicitly requests it (e.g. "start over" or "rewrite from scratch"). Existing state logic, sub-components, and structure are preserved.
 
-Once the subagent finishes, call `mcp__herklaude-design__design_url` with the project name to retrieve the preview URL.
+Once the subagent finishes, call `mcp__open-design__design_url` with the project name to retrieve the preview URL.
 
 Print the result as:
 

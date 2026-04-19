@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "herklaude-design": {
+    "open-design": {
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs"]
     }

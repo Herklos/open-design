@@ -23,7 +23,7 @@ It does NOT trigger for non-UI requests (data processing, file operations, expla
    - "admin dashboard" → `admin-dashboard`
    - If the user says "update X" or "add Y to X" and X matches an existing project directory under `projects/`, use that exact name — this is an **iteration**, not a new project.
 
-2. **Ensures the preview server is running** by calling `mcp__herklaude-design__design_start`. This is a no-op if the server is already up.
+2. **Ensures the preview server is running** by calling `mcp__open-design__design_start`. This is a no-op if the server is already up.
 
 3. **Delegates to the `designer` subagent**, passing:
    - The derived project name
@@ -31,7 +31,7 @@ It does NOT trigger for non-UI requests (data processing, file operations, expla
 
    The designer subagent handles all file creation or editing, compile-health checking, and self-correction. If a project with this name already exists, the subagent will read the existing files and iterate on them rather than starting from scratch.
 
-4. **Retrieves the preview URL** using `mcp__herklaude-design__design_url` once the subagent completes.
+4. **Retrieves the preview URL** using `mcp__open-design__design_url` once the subagent completes.
 
 ## Expected output format
 

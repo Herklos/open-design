@@ -1,13 +1,13 @@
 {
-  "name": "herklaude-design",
+  "name": "open-design",
   "version": "0.1.0",
-  "description": "Local Herklaude Design equivalent: terminal-driven React prototype builder with live Vite preview.",
+  "description": "Local Open Design equivalent: terminal-driven React prototype builder with live Vite preview.",
   "author": "paul@drakkar.software",
   "bin": {
     "design": "bin/design.mjs"
   },
   "mcpServers": {
-    "herklaude-design": {
+    "open-design": {
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs"]
     }

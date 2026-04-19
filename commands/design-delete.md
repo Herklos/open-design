@@ -1,7 +1,7 @@
 ---
 description: Delete a design project (asks for confirmation)
 argument-hint: <project-name>
-allowed-tools: mcp__herklaude-design__design_delete
+allowed-tools: mcp__open-design__design_delete
 ---
 
 Use $ARGUMENTS as the project name.

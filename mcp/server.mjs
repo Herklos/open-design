@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * MCP server for the herklaude-design plugin.
+ * MCP server for the open-design plugin.
  * Exposes design_* tools so Claude can query/control the preview server
  * without parsing Bash output.
  *
@@ -48,7 +48,7 @@ function runPlain(...args) {
 
 // ── server ────────────────────────────────────────────────────────────────────
 
-const server = new McpServer({ name: 'herklaude-design', version: '0.1.0' });
+const server = new McpServer({ name: 'open-design', version: '0.1.0' });
 
 server.tool(
   'design_status',

@@ -121,7 +121,7 @@ export default function Dashboard() {
       <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur-sm">
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-6 py-4">
           <Layers className="h-5 w-5 text-primary" />
-          <span className="font-semibold text-sm">Herklaude Design</span>
+          <span className="font-semibold text-sm">Open Design</span>
           <span className="ml-auto text-xs text-muted-foreground">{projects.length} project{projects.length !== 1 ? 's' : ''}</span>
         </div>
       </header>

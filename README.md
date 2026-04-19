@@ -1,12 +1,12 @@
-# Herklaude Design
+# Open Design
 
-A Claude Code plugin that lets you build and iterate on React prototypes from your terminal. Claude writes JSX; a local Vite dev server renders it live in your browser. The workflow mirrors Anthropic's Herklaude Design tool (launched April 2026), but runs entirely on your machine — no cloud preview service, no usage limits beyond your Claude subscription, and every project is just a file in `projects/`.
+A Claude Code plugin that lets you build and iterate on React prototypes from your terminal. Claude writes JSX; a local Vite dev server renders it live in your browser. The workflow mirrors Anthropic's Open Design tool (launched April 2026), but runs entirely on your machine — no cloud preview service, no usage limits beyond your Claude subscription, and every project is just a file in `projects/`.
 
 ---
 
 ## What it is
 
-herklaude-design turns Claude Code into a local React prototyping environment. You describe a UI in plain English; Claude writes `projects/<name>/App.jsx`; Vite's HMR pushes it to your browser in under a second. You keep chatting to iterate — add features, change the layout, fix a bug — and the preview updates without a reload. All your projects live as ordinary React files in your repository: edit them by hand, commit them to git, or deploy them anywhere.
+open-design turns Claude Code into a local React prototyping environment. You describe a UI in plain English; Claude writes `projects/<name>/App.jsx`; Vite's HMR pushes it to your browser in under a second. You keep chatting to iterate — add features, change the layout, fix a bug — and the preview updates without a reload. All your projects live as ordinary React files in your repository: edit them by hand, commit them to git, or deploy them anywhere.
 
 ---
 
@@ -88,13 +88,13 @@ Produces `projects/dashboard/App.jsx` with sub-components in `projects/dashboard
 **From the marketplace** (once published):
 
 ```bash
-claude plugin install herklaude-design
+claude plugin install open-design
 ```
 
 **Local install** (for development or if you cloned this repo):
 
 ```bash
-claude plugin install --local /path/to/herklaude-design-plugin
+claude plugin install --local /path/to/open-design-plugin
 ```
 
 ### Step 2 — Install MCP server dependencies
@@ -303,12 +303,12 @@ The designer and reviewer agents run as subagents. Subagent support requires **C
 
 ---
 
-**MCP tools not available** (`mcp__herklaude-design__*` tools are missing)
+**MCP tools not available** (`mcp__open-design__*` tools are missing)
 
 The MCP server failed to start, usually because `npm install` was not run in the plugin directory. Run:
 
 ```bash
-cd /path/to/herklaude-design-plugin
+cd /path/to/open-design-plugin
 npm install
 ```
 
@@ -325,7 +325,7 @@ Vite's HMR requires the browser tab to stay open and connected. If you closed an
 The plugin is structured as follows:
 
 ```
-herklaude-design/
+open-design/
 ├── agents/
 │   ├── designer.md          ← subagent: writes and edits React prototypes
 │   └── design-reviewer.md   ← subagent: reviews projects for quality
