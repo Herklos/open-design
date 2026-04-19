@@ -1,10 +1,8 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, FolderOpen, AlertCircle } from 'lucide-react';
+import { ArrowLeft, FolderOpen, AlertCircle, RefreshCw } from 'lucide-react';
 import ErrorBoundary from './ErrorBoundary.jsx';
 
-// Vite resolves this glob at build/dev time.
-// Each project's App.jsx becomes a lazy-loaded module with HMR.
 const modules = import.meta.glob('/projects/*/App.jsx');
 
 function NotFound({ name }) {
@@ -22,17 +20,44 @@ function NotFound({ name }) {
   );
 }
 
+function CompileError({ error }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-8 gap-4">
+      <div className="w-full max-w-2xl rounded-xl border border-destructive/30 bg-destructive/5 p-6 space-y-3">
+        <div className="flex items-center gap-2 text-destructive font-semibold">
+          <AlertCircle className="h-5 w-5 shrink-0" />
+          Compile error — fix the issue in your editor and save to reload
+        </div>
+        <pre className="overflow-auto rounded-lg bg-background/60 border border-destructive/20 px-4 py-3 text-xs font-mono text-destructive/80 leading-relaxed whitespace-pre-wrap">
+          {error}
+        </pre>
+      </div>
+    </div>
+  );
+}
+
 export default function Preview() {
   const { name } = useParams();
   const key = `/projects/${name}/App.jsx`;
   const [healthError, setHealthError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
-  useEffect(() => {
+  const checkHealth = useCallback(() => {
     fetch(`/api/projects/${name}/health`)
       .then(r => r.json())
       .then(d => { if (d.status === 'error') setHealthError(d.error); else setHealthError(null); })
       .catch(() => { /* server not ready yet */ });
   }, [name]);
+
+  useEffect(() => {
+    checkHealth();
+  }, [checkHealth]);
+
+  const handleReload = () => {
+    setHealthError(null);
+    setReloadKey(k => k + 1);
+    checkHealth();
+  };
 
   const ProjectApp = modules[key] ? lazy(modules[key]) : null;
 
@@ -45,25 +70,36 @@ export default function Preview() {
         <span className="text-border">|</span>
         <span className="font-medium">{name}</span>
         {healthError && (
-          <span className="ml-2 flex items-center gap-1 text-xs text-destructive">
+          <span className="flex items-center gap-1 text-xs text-destructive font-medium">
             <AlertCircle className="h-3.5 w-3.5" />
-            compile error — check terminal
+            compile error
           </span>
         )}
-        <button
-          className="ml-auto flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          onClick={() => window.open(`/p/${name}`, '_blank')}
-          title="Open in new tab"
-        >
-          <FolderOpen className="h-3.5 w-3.5" /> open standalone
-        </button>
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            onClick={handleReload}
+            aria-label="Reload preview"
+          >
+            <RefreshCw className="h-3.5 w-3.5" /> Reload
+          </button>
+          <button
+            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            onClick={() => window.open(`/p/${name}`, '_blank')}
+            aria-label="Open in new tab"
+          >
+            <FolderOpen className="h-3.5 w-3.5" /> open standalone
+          </button>
+        </div>
       </header>
 
       <main className="flex-1">
         {!ProjectApp ? (
           <NotFound name={name} />
+        ) : healthError ? (
+          <CompileError error={healthError} />
         ) : (
-          <ErrorBoundary key={name}>
+          <ErrorBoundary key={`${name}-${reloadKey}`}>
             <Suspense fallback={
               <div className="flex items-center justify-center py-24 text-sm text-muted-foreground animate-pulse">
                 Loading {name}…

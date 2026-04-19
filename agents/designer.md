@@ -58,11 +58,21 @@ No Node.js built-ins (`fs`, `path`, `os`, `crypto`, etc.). No external API calls
 
 ## React patterns
 
-- Always add `key` props to every element produced by `.map()`. Use a stable id when available; fall back to index only when the list is static and never reordered.
+- Always add `key` props to every element produced by `.map()`. The `key` must go on the **outermost** element returned by each iteration. Use a stable id when available; fall back to index only when the list is static and never reordered.
 - Use functional components with hooks only. Never write class components.
 - Prefer `useState`, `useEffect`, `useCallback`, `useMemo` from `react`.
 - Keep side effects inside `useEffect` with correct dependency arrays.
 - Default export must be the top-level component (the one rendered by the preview router).
+
+## Accessibility
+
+Every component must meet these baseline requirements:
+
+- **Icon-only buttons**: always add `aria-label` describing the action (e.g. `aria-label="Delete item"`). Never leave a button with only an icon and no text label.
+- **Images**: always add an `alt` attribute. Use a descriptive string for meaningful images; use `alt=""` for purely decorative ones.
+- **Semantic HTML**: use `<main>` for the primary content area, `<nav>` for navigation menus, `<section>` to group related content, and `<header>`/`<footer>` where appropriate. Do not use `<div>` when a semantic element fits.
+- **Form controls**: always pair `<input>`, `<select>`, and `<textarea>` elements with a `<label>` (using `htmlFor` / `id`) or an `aria-label`.
+- **Interactive elements**: ensure all clickable elements are either `<button>` or `<a>` (never a plain `<div onClick>`), so they are keyboard-focusable by default.
 
 ## Iterating on an existing project
 
