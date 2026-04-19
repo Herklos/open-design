@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * design — CLI helper for the claude-design plugin.
+ * design — CLI helper for the herklaude-design plugin.
  * Operates on the current working directory (a scaffolded design repo).
  * Pure node:* — no npm dependencies.
  *

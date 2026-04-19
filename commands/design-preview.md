@@ -1,7 +1,7 @@
 ---
 description: Open the preview for a project in the browser
 argument-hint: <project-name>
-allowed-tools: mcp__claude-design__design_start, mcp__claude-design__design_open, mcp__claude-design__design_url
+allowed-tools: mcp__herklaude-design__design_start, mcp__herklaude-design__design_open, mcp__herklaude-design__design_url
 ---
 
 Use $ARGUMENTS as the project name.

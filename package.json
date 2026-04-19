@@ -1,5 +1,5 @@
 {
-  "name": "claude-design-plugin",
+  "name": "herklaude-design-plugin",
   "version": "0.1.0",
   "description": "Claude Code plugin — local React prototype builder with live Vite preview",
   "type": "module",

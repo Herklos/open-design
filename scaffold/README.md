@@ -1,11 +1,11 @@
-# Claude Design Workspace
+# Herklaude Design Workspace
 
-A local prototyping workspace powered by the [claude-design](https://github.com/herklos/claude-design) plugin. Build and iterate on React UI projects through natural conversation with Claude.
+A local prototyping workspace powered by the [herklaude-design](https://github.com/herklos/herklaude-design) plugin. Build and iterate on React UI projects through natural conversation with Claude.
 
 ## Prerequisites
 
 - Node.js 18+
-- Claude Code with the `claude-design` plugin installed
+- Claude Code with the `herklaude-design` plugin installed
 
 ## Getting Started
 

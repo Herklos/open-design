@@ -1,8 +1,8 @@
-# Claude Design — Project Memory
+# Herklaude Design — Project Memory
 
 ## Plugin
-`claude-design` is installed. Use `/design*` commands, the `designer` subagent, and
-`mcp__claude-design__*` MCP tools for all prototype work.
+`herklaude-design` is installed. Use `/design*` commands, the `designer` subagent, and
+`mcp__herklaude-design__*` MCP tools for all prototype work.
 
 ## Repository Structure
 
@@ -65,7 +65,7 @@ import { Check, Trash2, Plus, Search, X, ChevronDown,
 
 ## Workflow
 1. Write / edit files under `projects/<name>/`.
-2. **After every write or edit, call `mcp__claude-design__design_health`** with the project name to check for compile errors. Do not skip this step — it is the only way to confirm the preview is healthy.
+2. **After every write or edit, call `mcp__herklaude-design__design_health`** with the project name to check for compile errors. Do not skip this step — it is the only way to confirm the preview is healthy.
 3. If `design_health` returns an error, diagnose and fix it immediately before continuing.
 4. Only report done once `design_health` returns clean.
 5. End every response with: `Preview: <URL from design_url>`

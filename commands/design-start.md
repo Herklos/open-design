@@ -1,6 +1,6 @@
 ---
 description: Start the Vite preview server
-allowed-tools: mcp__claude-design__design_start
+allowed-tools: mcp__herklaude-design__design_start
 ---
 
 Call `design_start` to start the Vite preview server.

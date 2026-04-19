@@ -1,7 +1,7 @@
 ---
 description: Rename a design project
 argument-hint: <old-name> <new-name>
-allowed-tools: mcp__claude-design__design_rename
+allowed-tools: mcp__herklaude-design__design_rename
 ---
 
 Extract the old name as the first word of $ARGUMENTS and the new name as the second word.

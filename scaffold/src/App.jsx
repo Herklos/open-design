@@ -6,14 +6,14 @@ import Preview from './Preview.jsx';
 
 function useDarkMode() {
   const [dark, setDark] = useState(() => {
-    const stored = localStorage.getItem('claude-design-dark');
+    const stored = localStorage.getItem('herklaude-design-dark');
     if (stored !== null) return stored === 'true';
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
-    localStorage.setItem('claude-design-dark', dark);
+    localStorage.setItem('herklaude-design-dark', dark);
   }, [dark]);
 
   return [dark, setDark];
