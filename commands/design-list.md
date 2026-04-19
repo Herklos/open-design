@@ -1,6 +1,6 @@
 ---
 description: List all design projects in this repo
-allowed-tools: mcp__claude-design__design_list
+allowed-tools: mcp__herklaude-design__design_list
 ---
 
 Call `design_list` to retrieve all projects.

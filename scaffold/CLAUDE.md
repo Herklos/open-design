@@ -1,49 +1,73 @@
-# Claude Design — Project Memory
+# Herklaude Design — Project Memory
 
 ## Plugin
-`claude-design` is installed. Use `/design*` commands, the `designer` subagent, and
-`mcp__claude-design__*` MCP tools for all prototype work.
+`herklaude-design` is installed. Use `/design*` commands, the `designer` subagent, and
+`mcp__herklaude-design__*` MCP tools for all prototype work.
 
-## Project Layout
+## Repository Structure
+
 ```
-projects/<name>/
-  App.jsx           ← default export, entry point — never rename
-  components/       ← additional components for this project
+(repo root)/
+├── projects/           ← one sub-directory per design project
+│   └── <name>/
+│       ├── App.jsx     ← default export, entry point — NEVER rename
+│       └── components/ ← optional sub-components for this project
+├── shared/             ← shared primitives (read-only — do not modify)
+│   ├── ui/             ← shadcn-style component files
+│   └── lib/
+│       └── utils.js    ← cn() helper
+├── src/                ← preview app shell (do not edit)
+│   └── main.jsx
+├── vite.config.js
+└── package.json
 ```
 
-## Imports
+Only write inside `projects/<name>/`. Do not modify `shared/`, `src/`, or config files.
 
-### Shared UI primitives
+## Available Shared UI Components
+
+All components below are pre-installed. Import them with `@shared/ui/*` — do not install or inline them.
+
 ```js
-import { Button }    from '@shared/ui/button'
-import { Card }      from '@shared/ui/card'
-import { Input }     from '@shared/ui/input'
-import { Label }     from '@shared/ui/label'
-import { Badge }     from '@shared/ui/badge'
-import { Tabs }      from '@shared/ui/tabs'
-import { Separator } from '@shared/ui/separator'
-import { Dialog }    from '@shared/ui/dialog'
-import { cn }        from '@shared/lib/utils'
+// Primitives
+import { Button }                                                     from '@shared/ui/button'
+import { Card, CardHeader, CardTitle, CardDescription,
+         CardContent, CardFooter }                                    from '@shared/ui/card'
+import { Input }                                                      from '@shared/ui/input'
+import { Label }                                                      from '@shared/ui/label'
+import { Badge }                                                      from '@shared/ui/badge'
+import { Separator }                                                  from '@shared/ui/separator'
+
+// Compound components
+import { Tabs, TabsList, TabsTrigger, TabsContent }                   from '@shared/ui/tabs'
+import { Dialog, DialogContent, DialogHeader, DialogTitle,
+         DialogDescription, DialogFooter, DialogTrigger }            from '@shared/ui/dialog'
+
+// Utility
+import { cn } from '@shared/lib/utils'
 ```
 
 ### Icons
 ```js
-import { IconName } from 'lucide-react'
+import { Check, Trash2, Plus, Search, X, ChevronDown,
+         ChevronRight, Star, Heart, Settings, Edit,
+         Copy, Download, Upload, ArrowRight, Home,
+         User, Bell, Mail } from 'lucide-react'
 ```
 
-## Styling
-- Tailwind v4 utility classes only.
-- No inline styles unless the value is dynamic.
-- No external CSS files per project.
+## Key Constraints
 
-## Constraints
-- Browser-only code. No Node built-ins. No external API calls.
+- **Tailwind v4 only** — utility classes only; no inline `style={{}}` (except truly dynamic values); no per-project CSS files.
+- **Browser-only code** — no Node built-ins (`fs`, `path`, `os`, `crypto`). No `require()`. No `process.env` (use `import.meta.env` for Vite env vars).
+- **No external fetches** — no `fetch()` to third-party URLs. Use static/mock data for prototypes.
+- **No 3rd-party component libraries** — use `@shared/ui/*` primitives. Do not `npm install` anything.
 
 ## Workflow
 1. Write / edit files under `projects/<name>/`.
-2. After every write, call `design_health` to check for compile errors.
-3. Only report done once `design_health` returns clean.
-4. End every response with: `Preview: <URL from design_url>`
+2. **After every write or edit, call `mcp__herklaude-design__design_health`** with the project name to check for compile errors. Do not skip this step — it is the only way to confirm the preview is healthy.
+3. If `design_health` returns an error, diagnose and fix it immediately before continuing.
+4. Only report done once `design_health` returns clean.
+5. End every response with: `Preview: <URL from design_url>`
 
 ## URLs
 | Purpose       | URL                               |

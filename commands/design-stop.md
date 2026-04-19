@@ -1,6 +1,6 @@
 ---
 description: Stop the Vite preview server
-allowed-tools: mcp__claude-design__design_stop
+allowed-tools: mcp__herklaude-design__design_stop
 ---
 
 Call `design_stop` to stop the Vite preview server.

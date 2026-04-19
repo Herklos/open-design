@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * design — CLI helper for the claude-design plugin.
+ * design — CLI helper for the herklaude-design plugin.
  * Operates on the current working directory (a scaffolded design repo).
  * Pure node:* — no npm dependencies.
  *
@@ -147,8 +147,8 @@ function cmdStop() {
     return;
   }
   try {
-    process.kill(pid, 'SIGTERM');
-    setTimeout(() => { try { process.kill(pid, 'SIGKILL'); } catch { /* already gone */ } }, 2000);
+    // SIGTERM first, then schedule SIGKILL via a detached shell so it survives this process exiting.
+    execSync(`kill ${pid}; (sleep 2 && kill -9 ${pid} 2>/dev/null) &`, { stdio: 'pipe', shell: true });
   } catch { /* already gone */ }
   try { fs.unlinkSync(PID_FILE); } catch { /* ignore */ }
   console.log('stopped');
@@ -220,9 +220,17 @@ async function cmdHealth(name, json) {
   }
 }
 
+function assertInProjects(resolved) {
+  if (!resolved.startsWith(PROJECTS_DIR + path.sep)) {
+    console.error('Invalid project name');
+    process.exit(1);
+  }
+}
+
 function cmdDelete(name) {
   if (!name) { console.error('Usage: design delete <name>'); process.exit(1); }
   const dir = path.join(PROJECTS_DIR, name);
+  assertInProjects(dir);
   if (!fs.existsSync(dir)) { console.error(`Project not found: ${name}`); process.exit(1); }
   fs.rmSync(dir, { recursive: true, force: true });
   console.log(`deleted: ${name}`);
@@ -232,6 +240,8 @@ function cmdRename(oldName, newName) {
   if (!oldName || !newName) { console.error('Usage: design rename <old> <new>'); process.exit(1); }
   const src = path.join(PROJECTS_DIR, oldName);
   const dst = path.join(PROJECTS_DIR, newName);
+  assertInProjects(src);
+  assertInProjects(dst);
   if (!fs.existsSync(src)) { console.error(`Project not found: ${oldName}`); process.exit(1); }
   if (fs.existsSync(dst)) { console.error(`Project already exists: ${newName}`); process.exit(1); }
   fs.renameSync(src, dst);

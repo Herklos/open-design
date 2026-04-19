@@ -11,7 +11,7 @@
           "tool": ["Write", "Edit"],
           "file": "projects/**/*.jsx"
         },
-        "command": "node \"${CLAUDE_PLUGIN_ROOT}/bin/design.mjs\" health $(echo \"$CLAUDE_TOOL_PATH\" | sed 's|projects/\\([^/]*\\)/.*|\\1|') --json"
+        "command": "node \"${CLAUDE_PLUGIN_ROOT}/bin/design.mjs\" health $(echo \"$CLAUDE_TOOL_PATH\" | sed 's|.*projects/\\([^/]*\\)/.*|\\1|') --json"
       }
     ]
   }

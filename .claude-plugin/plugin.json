@@ -1,13 +1,13 @@
 {
-  "name": "claude-design",
+  "name": "herklaude-design",
   "version": "0.1.0",
-  "description": "Local Claude Design equivalent: terminal-driven React prototype builder with live Vite preview.",
+  "description": "Local Herklaude Design equivalent: terminal-driven React prototype builder with live Vite preview.",
   "author": "paul@drakkar.software",
   "bin": {
     "design": "bin/design.mjs"
   },
   "mcpServers": {
-    "claude-design": {
+    "herklaude-design": {
       "command": "node",
       "args": ["${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs"]
     }
