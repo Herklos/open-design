@@ -27,16 +27,22 @@ export function projectsApiPlugin() {
       const root = server.config.root;
       const projectsDir = path.join(root, 'projects');
 
-      // Intercept Vite's internal error events to capture compile errors
-      server.ws.on('vite:error', (payload) => {
-        const match = payload?.err?.id?.match(/\/projects\/([^/]+)\//);
-        if (match) {
-          errors.set(match[1], {
-            message: payload.err.message,
-            loc: payload.err.loc,
-          });
+      // Intercept outgoing WebSocket messages to capture compile errors sent to the browser.
+      // server.ws.send() is how Vite pushes error payloads; server.ws.on() only receives
+      // messages FROM the browser, so listening there would never fire for build errors.
+      const origSend = server.ws.send.bind(server.ws);
+      server.ws.send = function (payload) {
+        if (payload?.type === 'error' && payload?.err?.id) {
+          const match = payload.err.id.match(/\/projects\/([^/]+)\//);
+          if (match) {
+            errors.set(match[1], {
+              message: payload.err.message,
+              loc: payload.err.loc,
+            });
+          }
         }
-      });
+        return origSend(payload);
+      };
 
       server.middlewares.use((req, res, next) => {
         const url = new URL(req.url, 'http://localhost');

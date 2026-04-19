@@ -29,7 +29,7 @@ function CompileError({ error }) {
           Compile error — fix the issue in your editor and save to reload
         </div>
         <pre className="overflow-auto rounded-lg bg-background/60 border border-destructive/20 px-4 py-3 text-xs font-mono text-destructive/80 leading-relaxed whitespace-pre-wrap">
-          {error}
+          {error?.message ?? JSON.stringify(error, null, 2)}
         </pre>
       </div>
     </div>
@@ -99,7 +99,7 @@ export default function Preview() {
         ) : healthError ? (
           <CompileError error={healthError} />
         ) : (
-          <ErrorBoundary key={`${name}-${reloadKey}`}>
+          <ErrorBoundary key={`${name}-${reloadKey}`} onRetry={handleReload}>
             <Suspense fallback={
               <div className="flex items-center justify-center py-24 text-sm text-muted-foreground animate-pulse">
                 Loading {name}…

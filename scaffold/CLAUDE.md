@@ -17,8 +17,7 @@
 │   └── lib/
 │       └── utils.js    ← cn() helper
 ├── src/                ← preview app shell (do not edit)
-│   ├── main.jsx
-│   └── router.jsx
+│   └── main.jsx
 ├── vite.config.js
 └── package.json
 ```

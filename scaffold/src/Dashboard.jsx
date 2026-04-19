@@ -112,8 +112,8 @@ export default function Dashboard() {
     fetchProjects();
     const interval = setInterval(fetchProjects, 5_000);
     const onFocus = () => fetchProjects();
-    window.addEventListener('visibilitychange', onFocus);
-    return () => { clearInterval(interval); window.removeEventListener('visibilitychange', onFocus); };
+    document.addEventListener('visibilitychange', onFocus);
+    return () => { clearInterval(interval); document.removeEventListener('visibilitychange', onFocus); };
   }, [fetchProjects]);
 
   return (

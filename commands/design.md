@@ -4,7 +4,9 @@ argument-hint: <project-name> <prompt…>
 allowed-tools: Bash, mcp__herklaude-design__design_start, mcp__herklaude-design__design_url
 ---
 
-Extract the project name as the first word of $ARGUMENTS and the prompt as the remaining words.
+If $ARGUMENTS is empty or missing, reply: "Usage: /design <name> <prompt>" and stop.
+
+Extract the project name as the first word of $ARGUMENTS and the prompt as the remaining words. If the prompt is empty after extracting the name, reply: "Usage: /design <name> <prompt>" and stop.
 
 Call `mcp__herklaude-design__design_start` to ensure the preview server is running.
 

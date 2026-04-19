@@ -12,7 +12,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { execSync, spawn } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
@@ -22,9 +22,9 @@ import http from 'node:http';
 const PLUGIN_ROOT = path.resolve(import.meta.dirname, '..');
 const DESIGN_BIN = path.join(PLUGIN_ROOT, 'bin', 'design.mjs');
 
-function run(subcmd) {
+function run(...args) {
   try {
-    return execSync(`node "${DESIGN_BIN}" ${subcmd} --json`, {
+    return execFileSync(process.execPath, [DESIGN_BIN, ...args, '--json'], {
       cwd: process.cwd(),
       stdio: 'pipe',
       timeout: 20_000,
@@ -34,9 +34,9 @@ function run(subcmd) {
   }
 }
 
-function runPlain(subcmd) {
+function runPlain(...args) {
   try {
-    return execSync(`node "${DESIGN_BIN}" ${subcmd}`, {
+    return execFileSync(process.execPath, [DESIGN_BIN, ...args], {
       cwd: process.cwd(),
       stdio: 'pipe',
       timeout: 20_000,
@@ -91,7 +91,7 @@ server.tool(
   'Get the preview URL for a specific design project.',
   { name: z.string().describe('Project folder name (kebab-case)') },
   async ({ name }) => ({
-    content: [{ type: 'text', text: runPlain(`url ${name}`) }],
+    content: [{ type: 'text', text: runPlain('url', name) }],
   })
 );
 
@@ -100,7 +100,7 @@ server.tool(
   'Open the preview for a project in the default browser.',
   { name: z.string().describe('Project folder name') },
   async ({ name }) => ({
-    content: [{ type: 'text', text: runPlain(`open ${name}`) }],
+    content: [{ type: 'text', text: runPlain('open', name) }],
   })
 );
 
@@ -109,7 +109,7 @@ server.tool(
   'Check the last Vite compile status for a project. Returns { status: "ok"|"error", error? }.',
   { name: z.string().describe('Project folder name') },
   async ({ name }) => ({
-    content: [{ type: 'text', text: run(`health ${name}`) }],
+    content: [{ type: 'text', text: run('health', name) }],
   })
 );
 
@@ -118,7 +118,7 @@ server.tool(
   'Delete a design project folder. Irreversible.',
   { name: z.string().describe('Project folder name to delete') },
   async ({ name }) => ({
-    content: [{ type: 'text', text: runPlain(`delete ${name}`) }],
+    content: [{ type: 'text', text: runPlain('delete', name) }],
   })
 );
 
@@ -130,7 +130,7 @@ server.tool(
     newName: z.string().describe('New project folder name (kebab-case)'),
   },
   async ({ oldName, newName }) => ({
-    content: [{ type: 'text', text: runPlain(`rename ${oldName} ${newName}`) }],
+    content: [{ type: 'text', text: runPlain('rename', oldName, newName) }],
   })
 );
 

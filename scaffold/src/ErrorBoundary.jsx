@@ -50,7 +50,7 @@ export default class ErrorBoundary extends Component {
           <ErrorDetails error={this.state.error} />
           <button
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
-            onClick={() => this.setState({ error: null })}
+            onClick={() => { this.props.onRetry?.(); this.setState({ error: null }); }}
           >
             Retry
           </button>
