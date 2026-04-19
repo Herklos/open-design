@@ -8,7 +8,12 @@ Extract the project name as the first word of $ARGUMENTS and the prompt as the r
 
 Call `mcp__claude-design__design_start` to ensure the preview server is running.
 
-Delegate to the `designer` subagent, passing it the project name and the full prompt. The subagent will create or update `projects/<name>/App.jsx` with a React component matching the prompt.
+Delegate to the `designer` subagent, passing it the project name and the full prompt.
+
+**Creation vs. iteration:**
+
+- If `projects/<name>/App.jsx` does **not** exist, this is a **new project**. The designer will create the file from scratch.
+- If `projects/<name>/App.jsx` **already exists**, this is an **iteration**. The designer will read the existing file first and make targeted edits — it will NOT start from scratch unless the prompt explicitly requests it (e.g. "start over" or "rewrite from scratch"). Existing state logic, sub-components, and structure are preserved.
 
 Once the subagent finishes, call `mcp__claude-design__design_url` with the project name to retrieve the preview URL.
 
