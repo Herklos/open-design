@@ -10,6 +10,69 @@ claude-design turns Claude Code into a local React prototyping environment. You 
 
 ---
 
+## How it works
+
+```
+You (terminal)
+     │
+     │  /design <name> <prompt>
+     ▼
+┌─────────────────┐
+│  /design command │  — ensures server is running, parses name + prompt
+└────────┬────────┘
+         │  delegates
+         ▼
+┌─────────────────┐
+│ designer subagent│  — reads existing files, writes/edits projects/<name>/App.jsx
+│  (claude-sonnet) │    calls design_health after every write, self-corrects errors
+└────────┬────────┘
+         │  file write triggers
+         ▼
+┌─────────────────┐
+│   Vite HMR      │  — detects file change, pushes update to open browser tab
+└────────┬────────┘
+         │
+         ▼
+   Browser preview
+   http://localhost:5173/p/<name>
+```
+
+The designer subagent is the core workhorse. It knows all the shared UI primitives, Tailwind constraints, and React best practices, so you don't have to repeat them in every prompt.
+
+---
+
+## Example projects
+
+**Todo app**
+
+```
+/design todo-app "A minimal todo list with add, toggle done, and delete. Show a count of remaining items and a clear-completed button."
+```
+
+Produces `projects/todo-app/App.jsx`: a stateful list with a controlled input, checkbox toggles, item deletion, and a footer counter — all using `Input`, `Button`, and `Badge` from `@shared/ui`.
+
+---
+
+**Pricing page**
+
+```
+/design pricing "Three-tier SaaS pricing page: Free, Pro ($29/mo), Enterprise (contact us). Highlight the Pro tier. Include a feature comparison table below the cards."
+```
+
+Produces `projects/pricing/App.jsx`: a responsive pricing grid with a highlighted `Card` for the Pro tier, feature rows with `Check` and `X` icons from lucide-react, and a sticky CTA.
+
+---
+
+**Analytics dashboard**
+
+```
+/design dashboard "Admin dashboard with a sidebar nav (Overview, Users, Revenue, Settings), KPI cards at the top (total users, MRR, churn rate), and a placeholder chart area."
+```
+
+Produces `projects/dashboard/App.jsx` with sub-components in `projects/dashboard/components/` — a `Sidebar.jsx`, `KpiCard.jsx`, and a chart placeholder that renders a bar-chart skeleton using only Tailwind divs.
+
+---
+
 ## Requirements
 
 - **Node.js 18+**
@@ -162,7 +225,21 @@ The server runs on port **5173** by default. The dashboard (project list) is at 
 
 ---
 
-## How iteration works
+## How iterating works
+
+Running `/design <name>` with the same project name always **iterates on the existing project** — it never starts from scratch unless you explicitly ask it to. This means:
+
+- Your existing state logic, component structure, and sub-components are preserved.
+- The designer reads the current files first, then makes targeted edits with the `Edit` tool.
+- You can layer changes across many turns: build the skeleton, then add a feature, then restyle it.
+
+To start completely fresh on an existing project, tell Claude explicitly:
+
+```
+/design todo-app "start from scratch — I want a completely different layout"
+```
+
+Detailed iteration flow:
 
 1. You run `/design <name> "<change>"`.
 2. The designer subagent reads the current `App.jsx` and any referenced component files.
@@ -219,6 +296,12 @@ The PostToolUse hook catches most errors automatically and Claude self-corrects.
 ```
 
 You can also check `.design/server.log` for the raw Vite error output.
+
+**Subagent not available** (error mentioning "subagent" or "agent support")
+
+The designer and reviewer agents run as subagents. Subagent support requires **Claude Pro, Max, Team, or Enterprise** — it is not available on the free tier. Upgrade your Claude subscription, or switch to one of those plans in Claude Code settings.
+
+---
 
 **MCP tools not available** (`mcp__claude-design__*` tools are missing)
 
