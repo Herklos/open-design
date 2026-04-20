@@ -79,7 +79,7 @@ function ProjectCard({ project, onClick }) {
       <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
         <ExternalLink className="h-4 w-4 text-muted-foreground" />
       </div>
-    </button>
+    </div>
   );
 }
 
