@@ -2,9 +2,9 @@
   "name": "open-design",
   "version": "0.1.0",
   "description": "Local Open Design equivalent: terminal-driven React prototype builder with live Vite preview.",
-  "author": "paul@drakkar.software",
-  "bin": {
-    "design": "bin/design.mjs"
+  "author": {
+    "name": "Paul",
+    "email": "paul@drakkar.software"
   },
   "mcpServers": {
     "open-design": {
