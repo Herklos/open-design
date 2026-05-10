@@ -1,4 +1,5 @@
 # Open Design
+**DEPRECATED: use https://github.com/nexu-io/open-design instead.**
 
 A Claude Code plugin that lets you build and iterate on React prototypes from your terminal. Claude writes JSX; a local Vite dev server renders it live in your browser. The workflow mirrors Anthropic's Open Design tool (launched April 2026), but runs entirely on your machine — no cloud preview service, no usage limits beyond your Claude subscription, and every project is just a file in `projects/`.
 
